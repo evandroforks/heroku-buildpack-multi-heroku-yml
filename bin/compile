@@ -1,32 +1,45 @@
 #!/usr/bin/env bash
+set -x
 
 indent() {
     sed -u 's/^/       /'
 }
 
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
+BUILD_DIR="$1"
+CACHE_DIR="$2"
+ENV_DIR="$3"
 
-PROCFILE=$(cat "${ENV_DIR}/PROCFILE")
+printf "BUILD_DIR: '%s'\\n" "${BUILD_DIR}"
+printf "CACHE_DIR: '%s'\\n" "${CACHE_DIR}"
+printf "ENV_DIR: '%s'\\n" "${ENV_DIR}"
 
-if [[ -z "${PROCFILE}" ]]; then
-    echo "PROCFILE was not set. Aborting" | indent
+ls -la "${ENV_DIR}"
+
+HEROKUYML=$(cat "${ENV_DIR}/HEROKUYML")
+
+if [[ -z "${HEROKUYML}" ]]; then
+    printf "HEROKUYML environment variable was not set. Aborting\\n" | indent
     exit 1
 fi
 
-cp "${BUILD_DIR}/${PROCFILE}" "${BUILD_DIR}/Procfile"
+cp "${BUILD_DIR}/${HEROKUYML}" "${BUILD_DIR}/heroku.yml"
 
 if ! [ $? ]; then
-    echo "FAILED to copy a Procfile" | indent
+    printf "FAILED to copy the 'heroku.yml=%s'\\n" "${HEROKUYML}" | indent
     exit 1
 fi
 
-echo "Copied ${PROCFILE} as Procfile successfully" | indent
+printf "Copied '${HEROKUYML}' as 'heroku.yml' successfully...\\n" | indent
 
-APP_DIR=$(dirname "${BUILD_DIR}/${PROCFILE}")
+APP_DIR=$(dirname "${BUILD_DIR}/${HEROKUYML}")
+printf "APP_DIR '%s'\\n" "${APP_DIR}" | indent
 
 if [[ -f "${APP_DIR}/app.json" ]]; then
     cp "${APP_DIR}/app.json" "${BUILD_DIR}/app.json"
-    echo "Copied ${APP_DIR}/app.json as app.json successfully" | indent
+    printf "Copied '%s/app.json' as app.json successfully" "${APP_DIR}" | indent
+fi
+
+if [[ -f "${APP_DIR}/Procfile" ]]; then
+    cp "${APP_DIR}/Procfile" "${BUILD_DIR}/Procfile"
+    printf "Copied '%s/Procfile' as Procfile successfully" "${APP_DIR}" | indent
 fi

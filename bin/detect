@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-echo "Multi-procfile"
+echo "Multi-heroku.yml"
 exit 0

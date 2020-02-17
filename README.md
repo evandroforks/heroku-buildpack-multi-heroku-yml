@@ -5,10 +5,10 @@ _tl;dr_ -- The idea here is that you have a single git repository, but multiple 
 ```
 $ heroku create -a example-1
 $ heroku create -a example-2
-$ heroku buildpacks:add -a example-1 https://github.com/heroku/heroku-buildpack-multi-procfile
-$ heroku buildpacks:add -a example-2 https://github.com/heroku/heroku-buildpack-multi-procfile
-$ heroku config:set -a example-1 PROCFILE=Procfile
-$ heroku config:set -a example-2 PROCFILE=backend/Procfile
+$ heroku buildpacks:add -a example-1 https://github.com/evandroforks/heroku-buildpack-multi-heroku-yml
+$ heroku buildpacks:add -a example-2 https://github.com/evandroforks/heroku-buildpack-multi-heroku-yml
+$ heroku config:set -a example-1 HEROKUYML=heroku.yml
+$ heroku config:set -a example-2 HEROKUYML=backend/heroku.yml
 $ git push https://git.heroku.com/example-1.git HEAD:master
 $ git push https://git.heroku.com/example-2.git HEAD:master
 ```
